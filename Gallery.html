@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Photo Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        /* --- INTERNAL CSS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #2d3436;
+            /* FIX: Prevents navbar from covering the title */
+            padding-top: 80px;
+        }
+
+        /* Fixed Navigation Bar */
+        header.main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            z-index: 1000;
+            transition: 0.3s;
+        }
+
+        .logo {
+            color: #fff;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            font-weight: 500;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #f0c040;
+        }
+
+        /* Gallery Title Section (Renamed from header to avoid CSS conflict) */
+        .intro-section {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 50px auto;
+        }
+
+        .intro-section h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #1e272e;
+        }
+
+        /* Category Filter Buttons */
+        .filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 2px solid #dfe6e9;
+            padding: 10px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #636e72;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #00cec9;
+            color: white;
+            border-color: #00cec9;
+            box-shadow: 0 4px 15px rgba(0, 206, 201, 0.3);
+        }
+
+        /* Gallery Grid */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .photo-card {
+            position: relative;
+            height: 550px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .photo-card.hide {
+            display: none;
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: 3/4;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .photo-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Caption Overlay */
+        .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 13px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            transition: all 0.4s ease;
+        }
+
+        .caption h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .caption p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Mobile Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -260px;
+            width: 260px;
+            height: 100%;
+            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 80px 20px;
+            transition: 0.4s;
+            z-index: 2000;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        .menu-btn,
+        .close-btn {
+            cursor: pointer;
+            color: #fff;
+        }
+
+        /* Desktop Adjustments */
+        @media (min-width: 769px) {
+            header.main-nav {
+                background: #f0c140de;
+            }
+
+            .logo,
+            .nav-links a {
+                color: #000;
+            }
+
+            .menu-btn {
+                display: none;
+            }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            header.main-nav {
+                background: rgba(0, 0, 0, 0.4);
+                backdrop-filter: blur(12px);
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .menu-btn {
+                display: block;
+                font-size: 24px;
+            }
+
+            .gallery-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+
+                margin: 10px;
+            }
+
+            .photo-card {
+                height: auto;
+                aspect-ratio: 3/4;
+
+            }
+
+            .caption h3,
+            .caption p {
+                font-size: 3vw;
+
+            }
+
+            .footer {
+                background: #000;
+                color: #fff;
+                padding: 30px 10px !important;
+                text-align: center;
+                margin-top: 100px;
+            }
+
+            .footer-content h3 {
+                font-size: 11px;
+                letter-spacing: 4px;
+                margin-bottom: 10px !important;
+                text-transform: uppercase;
+            }
+
+            .footer-content p {
+                font-size: 7px;
+                opacity: 0.7;
+            }
+
+            .social-links {
+                margin: 15px 0 !important;
+            }
+
+            .social-links a {
+                color: #fff;
+                margin: 0 15px !important;
+                font-size: 10px;
+                transition: 0.3s;
+            }
+
+            .social-links a:hover {
+                color: #f0c040;
+                transform: scale(1.2);
+                display: inline-block;
+            }
+
+            .footer .copyright {
+                font-size: 13px;
+                opacity: 0.5;
+                margin-top: 20px !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                padding-top: 5px !important;
+                display: inline-block;
+            }
+
+        }
+
+        .visual-text {
+            max-width: 700px;
+            margin: 10px auto;
+            padding: 0 15px;
+            font-size: 18px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .footer {
+            background: #000;
+            color: #fff;
+            padding: 60px 20px;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .footer-content h3 {
+            font-size: 22px;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .footer-content p {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .social-links {
+            margin: 25px 0;
+        }
+
+        .social-links a {
+            color: #fff;
+            margin: 0 15px;
+            font-size: 20px;
+            transition: 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #f0c040;
+            transform: scale(1.2);
+            display: inline-block;
+        }
+
+        .footer .copyright {
+            font-size: 13px;
+            opacity: 0.5;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="main-nav">
+        <div class="logo">Bhadrecha Nakul</div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="Aboutme.html">About</a>
+            <a href="Gallery.html">Gallery</a>
+        </nav>
+        <i class="fas fa-bars menu-btn" onclick="openMenu()"></i>
+    </header>
+
+    <div class="sidebar" id="sidebar">
+        <i class="fas fa-times close-btn" onclick="closeMenu()"
+            style="position:absolute; top:20px; right:20px; font-size:24px;"></i>
+        <a href="index.html"><i class="fas fa-house"></i> Home</a>
+        <a href="Aboutme.html"><i class="fas fa-camera"></i> About</a>
+        <a href="Gallery.html"><i class="fas fa-image"></i> Gallery</a>
+    </div>
+
+    <div class="intro-section">
+        <h1 style="color: #977a29;">Visual Discovery</h1>
+        <p class="visual-text">
+            I love traveling and exploring new places, as it helps me discover the beauty of the world.
+            Traveling is my hobby, and I enjoy clicking pictures of nature, moments, and special moments.
+            Photography allows me to express my creativity and capture memories that last forever.
+        </p>
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterGallery(event, 'all')">All Photos</button>
+            <button class="filter-btn" onclick="filterGallery(event, 'ancient')">Ancient</button>
+            <button class="filter-btn" onclick="filterGallery(event, 'nature')">Nature</button>
+            <button class="filter-btn" onclick="filterGallery(event, 'myself')">Picture of myself</button>
+        </div>
+    </div>
+
+    <main class="gallery-container">
+        <div class="photo-card" data-category="ancient">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/611690788_18301766809287615_3474691782994235007_n.heic?stp=dst-jpg_e35_p1080x1080_tt6&_nc_cat=110&ig_cache_key=MzgwMzQxMjE5MTY3MzMwODU3NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=ja3NPddfKpUQ7kNvwG1R4d6&_nc_oc=AdlE2HhUAwnEYIvhv9G1_xDFLCGBwhWBQ6zi3g--rBFD2gJi13hPwPu0q0DqkNbPhdQnGrvY5Ln-uQyq93MbBAVq&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=3MabQlTveJdP77yWhgQx4w&oh=00_AfrQcHnn_nuq4MX8ljXzuPZC3H_JCR4onigklc8JdAXcIg&oe=69766EB9"
+                alt="Pyramids">
+            <div class="caption">
+                <h3>Uparkot fort</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="ancient">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/610665738_18301766770287615_4819534825876193541_n.heic?stp=dst-jpg_e35_p1080x1080_tt6&_nc_cat=100&ig_cache_key=MzgwMzQxMjE5MTc1NzE1ODY0Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=DPmDNy32EZ8Q7kNvwEnfQlc&_nc_oc=AdnV0768B2FvjedlpgxEQisf2V6cPZIBPSIS6VuqQCXpuSQTdv4CkkUjNLkdtwRYbjo3O1h9sMZzrd837RsA_qLJ&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=3MabQlTveJdP77yWhgQx4w&oh=00_Afo-hkYbgwc_t4KeNlGNt3Vc-9NopCgdfSLjQof8X2-8jw&oe=697652E4"
+                alt="Mountains">
+            <div class="caption">
+                <h3>Uparkot fort</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="ancient">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/590961626_18301766779287615_5184848666945018239_n.heic?stp=dst-jpg_e35_p1080x1080_tt6&_nc_cat=108&ig_cache_key=MzgwMzQxMjE5MTc3MzkzOTYzOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=5WgSR0o4iG4Q7kNvwG1F1x1&_nc_oc=Admek0e_PTJybxUL4U3BbWhjRvsapvN96Lz-n-K6aeMPhimJD5ewvtRS1gaZxLWx75X9iDc6s2V40T8xmraUTTPY&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=3MabQlTveJdP77yWhgQx4w&oh=00_Afr_hrCSdVh4kYlB1JuYNUk2UdLyeVAq_NEhG1Vz_Z02oQ&oe=697684ED"
+                alt="Uparkot fort">
+            <div class="caption">
+                <h3>Uparkot fort</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="ancient">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/612150157_18301766752287615_7628824350568040407_n.heic?stp=dst-jpg_e35_p1080x1080_tt6&_nc_cat=110&ig_cache_key=MzgwMzQxMjE5MTk1ODQ3NzAxNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=1bSMGvEzZZcQ7kNvwG0few5&_nc_oc=AdkbpTW0X8d0UG-t4fswHN1mgyhqjDL8gPoPq01lzzkSQn8FllqJVVlUJGSMHwwq5AW80GaCrVH2LBDVRxxB4QsD&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=3MabQlTveJdP77yWhgQx4w&oh=00_AfoEd_u8QlCnsBHwKsiBtCQSWf188mlT75wNvNN1r044Jg&oe=697675A5"
+                alt="Rome">
+            <div class="caption">
+                <h3>Uparkot fort</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="ancient">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/611768079_18301766812287615_6320055410319923627_n.heic?stp=dst-jpg_e35_p1080x1080_tt6&_nc_cat=107&ig_cache_key=MzgwMzQxMjE5MTg0MTA2MzYwNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=xGNyuW2KsNQQ7kNvwF3jhRA&_nc_oc=AdlfaipfenuJTRhhAjCcGUoUzJsMTI_qh4nKIHho6K3tSbws86f6qAqUkUShMm2teulngr7Se4PtNlxS5ZxwQtoR&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=3MabQlTveJdP77yWhgQx4w&oh=00_AfrY8KbVHr2mEKCQCIoLE9faUA78kx8LTzy44h9JYQLBLQ&oe=69766ABA"
+                alt="Rome">
+            <div class="caption">
+                <h3>Uparkot fort</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="ancient">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/610564959_18301439062287615_5452932851571395797_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=104&ig_cache_key=MzgwMTIxNjEwOTM2MzAyNDUzOQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=t9gKu7_Fgd8Q7kNvwG2FITj&_nc_oc=AdnQNlYg771Ogp-3o07ilz93CyOyo85k3tm28DhiCULmi8i6pECUKLXEy1NWWU5f9Ub-Z9MYfMkAGnRNEVMiUn_9&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=ptZz0XI7iqPByNwiRYRNrA&oh=00_AfqMzoCPXeevayokeWOitN-hAjUbzIgW2pMzz46lAaKczg&oe=697672C3"
+                alt="Rome">
+            <div class="caption">
+                <h3>Uparkot fort</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="nature">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/534991351_18283061869287615_8082160897387822217_n.webp?_nc_cat=104&ig_cache_key=MzcwMTIwMzcwMDc3MDg1Njk2MA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4ODEwLnNkci5DMyJ9&_nc_ohc=y4-55cBQmKIQ7kNvwGAnhER&_nc_oc=Adka7nvJun3qEejvsiXU6bA8ZMEF62HfWDmaLV4TMhxbsCmhquBxPIYuW1z7Vx0WkRvnyAXTwuRcJmqIhcM1OOye&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=n0FrQGIGl3upLFToqxeO2g&oh=00_Afp4o9Akez9QTQz2AD1wqLXEs8HL-lz_OBcGd-TUoeuQzg&oe=69768DA1"
+                alt="Forest">
+            <div class="caption">
+                <h3>Cairns</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="nature">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/534316758_18283061878287615_2872723421202124579_n.webp?_nc_cat=107&ig_cache_key=MzcwMTIwMzcwMDc1NDAzNjM5OA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4ODEwLnNkci5DMyJ9&_nc_ohc=pNgCLhMhXdQQ7kNvwF-puQz&_nc_oc=AdkuD0jgSfIhzgNBzLTUcGYiI8AIDcdOJHejY0spDAOsyhkCsi8TbMOt-F4LFeLBB0MwzkLHVNYqgZXAnSMVdrlA&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=n0FrQGIGl3upLFToqxeO2g&oh=00_AfrXjnNuFaTREuqQLeh4deHwfp8bkfMfo3sJwWUg9ewQjA&oe=697674A5"
+                alt="Forest">
+            <div class="caption">
+                <h3>Nature</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="nature">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/534666394_18283061887287615_1444304480421518624_n.webp?_nc_cat=100&ig_cache_key=MzcwMTIwMzcwMTI0MDU4MTgwNQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4ODEwLnNkci5DMyJ9&_nc_ohc=hmx33Kgv69EQ7kNvwEckqi9&_nc_oc=AdlMPUXX0zm8-XgeYx0-D7YzpUVdb0sC2sM8iQ9HGpjDwLLMNnNRP2acoNY-JmKNZsNB2q5RWLfFa-43fWJkv4qQ&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=n0FrQGIGl3upLFToqxeO2g&oh=00_AfqznKGc0XYwPYJue-yrh2eWS-y2acL4scKPz4-d-wjA5w&oe=697659B0"
+                alt="Forest">
+            <div class="caption">
+                <h3>My Cairns</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="nature">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/535685381_18283061956287615_669665468788551314_n.webp?_nc_cat=106&ig_cache_key=MzcwMTIwMzcwMTAyMjMzNDQzMg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQ0MC5zZHIuQzMifQ%3D%3D&_nc_ohc=NrxIMVhHjGQQ7kNvwGZsd9L&_nc_oc=AdkIzAtti6s14eT37L2wjICiTJSAZGEVEhKIxc6dXuh91QMygqSSy-rTJpdYxLj_6o68FBUXF50_zSpJw3vpFRDS&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=n0FrQGIGl3upLFToqxeO2g&oh=00_AfqeEV53F_mEsC2nvNxHTz6i6RDeUVTGaA1FGfn70z_48A&oe=69765F46"
+                alt="City Lights">
+            <div class="caption">
+                <h3>Nature</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="nature">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/581371704_18295819579287615_6326012972545137138_n.webp?_nc_cat=102&ig_cache_key=Mzc2MzQwNTUzNzgxMjIwNTQ5NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQyMy5zZHIuQzMifQ%3D%3D&_nc_ohc=H_03LrDNXF0Q7kNvwEokN_L&_nc_oc=AdkWpjCwjqKl6MxgiYAFctrToemair9ikh3vyUqQALX86OhIsUZ3UsGIz7O2DYXdS2x51Of0Z6V2GDP_GorOjhAJ&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=Tjb9nQDyPlxJz4dkSCuSQQ&oh=00_AfqRQv3aEgS6Eze7q1S497BqN7LM35ONjvtv22OGNnzlgw&oe=697659A8"
+                alt="Forest">
+            <div class="caption">
+                <h3>The Green Trail</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="nature">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/581081796_18295819615287615_8306608992522135005_n.webp?_nc_cat=101&ig_cache_key=Mzc2MzQwNTUzNzEwNzUxMjA2NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQyMy5zZHIuQzMifQ%3D%3D&_nc_ohc=qW29mSUXn7cQ7kNvwGvcDcW&_nc_oc=AdmV8-q0nNx-zWyY6MGnkuErHGgvfsHmZiZHF10pMoi2fCDBxSs-z2ciVha35pcG2q27GERq73aHigTlizGxgY9Y&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=Tjb9nQDyPlxJz4dkSCuSQQ&oh=00_AfpVdmbZFUtxqPQDbdBM99o3mOLk0FVJtn7l8dG92C6XzQ&oe=697661B8"
+                alt="Forest">
+            <div class="caption">
+                <h3>Nature</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="nature">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/576087477_18295819633287615_8597449225145845889_n.webp?_nc_cat=107&ig_cache_key=Mzc2MzQwNTUzNzEwNzU0NjY4Mw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQyMy5zZHIuQzMifQ%3D%3D&_nc_ohc=MeujGni7cJcQ7kNvwFuOIZP&_nc_oc=AdnQjquOwWTSNAMR1T-ACnE_zScvYXI1O5c-FKErS6wbKB7X7m_ZZ214LzbmXpk7_-0pV9QR1mTnHek8T3Svmg_5&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=Tjb9nQDyPlxJz4dkSCuSQQ&oh=00_AfqN5ZD6pGVy9kj08D4JAr8JAqJ3AeRPE4YBl-A95NMv4g&oe=69765D79"
+                alt="Forest">
+            <div class="caption">
+                <h3>Nature</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="nature">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/572282272_18295819678287615_2790293648749052453_n.webp?_nc_cat=110&ig_cache_key=Mzc2MzQwNTUzNzA5OTE3MTE4Ng%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQyMy5zZHIuQzMifQ%3D%3D&_nc_ohc=495beSdGWF4Q7kNvwH-d6to&_nc_oc=Admn7ZwiN613GQJLONJjumdihALqo8CYLJf9kpLYrmA_pyqP2u8GLRnlJAj6siRsPSDEBokut36SJWHWGu_dHOqM&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=Tjb9nQDyPlxJz4dkSCuSQQ&oh=00_AfrWLBG5ZqDDxFseUWJ-iWlzhefDe5EHAtpRfO8Pj9KDQQ&oe=69767FC9"
+                alt="Forest">
+            <div class="caption">
+                <h3>Sunset</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="myself">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/610166985_18301766725287615_4572400227891458870_n.heic?stp=dst-jpg_e35_p1080x1080_tt6&_nc_cat=105&ig_cache_key=MzgwMzQxMjE5MTY1NjUwODc0OA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=v6bceS3FDz4Q7kNvwFRjMRx&_nc_oc=Adl0ubPZPtdXls5HRu0INXo4-dTIaXdkb6P8h3QYKLb-RlDp_0I5vcOin_sTdG_anKksJKWE-WJiwtsfDJx4o3so&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=fTKENRyb2uxyEiggGskLeQ&oh=00_AfrRD39yTV9O4QuSwnkxkvjVEi78CtQLnDt7dd9-J4JIfQ&oe=697822CA"
+                alt="myself">
+            <div class="caption">
+                <h3>Uparkot fort, Junagadh</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="myself">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/610756159_18301427719287615_3742661565921129875_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=MzgwMTIxNjEwOTY1NjY1OTI2MA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=XPQRMm8HAHwQ7kNvwFgGXxz&_nc_oc=AdnU6n9AnCIuXt1iX4jwO3qmqUlxvvllwM-sN2dlR6jKNfFDazGD7lpqm0h1RzCs7hQMWVQXVNjnRMbyXnMFfwta&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=tME3x5CiwmMIZ5WwXVLsig&oh=00_AfoG40f14C9Pbu_ydvTI_f-xWkDZtbaBgYNWwnzDVfKMZA&oe=69782790"
+                alt="myself">
+            <div class="caption">
+                <h3>Uparkot fort, Junagadh</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="myself">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/609317888_18301427728287615_6650544219947858279_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=MzgwMTIxNjEwOTM3MTQ1NjM2Mg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=54h2FgmwoX4Q7kNvwGMZFpg&_nc_oc=AdkE4QmW5H2FJvLGmohwP0jKS1GGDzFv5D1m-n_6C1HvjuLhheRtic2NQ1JbxVZS8T9z8Xkxye6mkCiHWRzCTVhr&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=tME3x5CiwmMIZ5WwXVLsig&oh=00_AfoDyxVSAystP5MPBqvXRriswL4izF1Tr4QbShlFPaIXeQ&oe=6977FE19"
+                alt="myself">
+            <div class="caption">
+                <h3>Uparkot fort, Junagadh</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="myself">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/612057459_18301766743287615_7661989004232245846_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=104&ig_cache_key=MzgwMzQxMjE5MTY2NDg5MzcwNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=A9zC3KR4kYMQ7kNvwEl39F1&_nc_oc=Adn8ZhOULpwvq-TVbC1sJCJx78_tqL98dfpqbxsyjR3w_c4otFr6yzMKEow2GX1VmtCLXR3_qkPPQ7LBrznDSJFt&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=usk4owqhcE7JKYqI5wOi2Q&oh=00_AfpH88k9bzmz4Pfl3P15DqOCLH4CC800oCzB4iPcgroWPg&oe=69780ED6"
+                alt="myself">
+            <div class="caption">
+                <h3>Uparkot fort, Junagadh</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="myself">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/580713270_18295819570287615_6462001096340539651_n.webp?_nc_cat=111&ig_cache_key=Mzc2MzQwNTUzNzkyMTI1OTQyNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQyMy5zZHIuQzMifQ%3D%3D&_nc_ohc=b58wqhhOm2cQ7kNvwFNGAS5&_nc_oc=Adm6vl04Go8QBnLSXWwUgAEoCWHtQz50k0pIgdDyrtbIMZTrBM4bM7ammn7Ah3BhyGMNDyTi8ZcXOuDD_tDEW4fn&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=q-Yz_aPSP5Sh9hDIeFrsuA&oh=00_AfoIvAep3w5mUnVwBtBbA-WKwoQSyZRB-S-rhbkUoXQLEQ&oe=69782092"
+                alt="myself">
+            <div class="caption">
+                <h3>Hidden Nature Spot in Porbandar</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="myself">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/535156780_18283257661287615_364811249984557543_n.webp?_nc_cat=103&ig_cache_key=MzcwMjU1MjgyNTU1MTc5NjIyMQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQ0MC5zZHIuQzMifQ%3D%3D&_nc_ohc=2F_8MNs_-FAQ7kNvwFKXoxX&_nc_oc=AdnphWayxitMC3cJ9EiCRWd3_UlAcjyl7X_wEW7VdyvMnrf0DxHcyd-Gufu4CjcSiljhpVkASNKBFqraefvbKjBg&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=q-Yz_aPSP5Sh9hDIeFrsuA&oh=00_AfpxyDb1CtKBycnt2gkJQjoCdx0agJX64_350ybaBFqjvw&oe=6977F8DA"
+                alt="myself">
+            <div class="caption">
+                <h3>Sudershan Setu</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="myself">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/535238850_18283257670287615_6850825986594726589_n.webp?_nc_cat=102&ig_cache_key=MzcwMjU1MjgyNTA3MzczMzI1OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQ0MC5zZHIuQzMifQ%3D%3D&_nc_ohc=JdeXgjBk7tQQ7kNvwHOYkKp&_nc_oc=Adm6mvfzztYHWOaS9tjdsLBt04k3uK2KLsdkGbyFzgHJ-Hh6d_wjYkJhdsgyRS4tMKV_NjxN8NaUAX6C3d4_AjIt&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=q-Yz_aPSP5Sh9hDIeFrsuA&oh=00_AfoZt0H2lSXmyifbe7IXzRflREUXatQdsFAeaSF37dXE8Q&oe=69780BA2"
+                alt="myself">
+            <div class="caption">
+
+                <h3>Sudershan Setu </h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="myself">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/535583413_18283257700287615_1488919868604559661_n.webp?_nc_cat=111&ig_cache_key=MzcwMjU1MjgyNTA4MTk5ODk3MA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQ0MC5zZHIuQzMifQ%3D%3D&_nc_ohc=FXsS4qlbs7AQ7kNvwES7hwN&_nc_oc=AdmWyP0bCfNNOaBBuBW_wUFX9zhOr5xQjYoh3G5QCfaVxZYBCCyQz3vJry0y0AcE2EscnJ3ls40VUUCLdSBzGt9t&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=q-Yz_aPSP5Sh9hDIeFrsuA&oh=00_AfqUcZt0zgoElv8chkt8gQOgAJK3lm1Iu88o77p-idkfTg&oe=6977F58D"
+                alt="myself">
+            <div class="caption">
+
+                <h3>Shivrajput Beach</h3>
+            </div>
+        </div>
+
+        <div class="photo-card" data-category="myself">
+            <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/535682600_18283257709287615_7968721127186021614_n.webp?_nc_cat=104&ig_cache_key=MzcwMjU1MjgyNTM4NDEzNTg2NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQ0MC5zZHIuQzMifQ%3D%3D&_nc_ohc=urN0Tz-0d1gQ7kNvwFHWaAx&_nc_oc=AdmopHEOOm-zrDdhAKRgLSGqqTQ6sUWE0L8LWfU4RogSNmTtS88nKWof35zCTCu6umyMq5F-0nrSOmPgLxiiD5Kc&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=q-Yz_aPSP5Sh9hDIeFrsuA&oh=00_AfoBzotLqsDCZe29QpozHlbVGZtxaiokMnZFKiA1sxbvlQ&oe=6978172E"
+                alt="myself">
+            <div class="caption">
+                <h3>Shivrajpur Beach</h3>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <h3 id="namefooter">Nakul Bhadrecha</h3>
+            <p id="categoryfooter">Photography • Travel • Nature</p>
+            <div class="social-links">
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p class="copyright">
+                © 2026 Nakul Bhadrecha. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Menu Functions (Fixes the mobile glitch)
+        function openMenu() {
+            document.getElementById("sidebar").classList.add("active");
+        }
+
+        function closeMenu() {
+            document.getElementById("sidebar").classList.remove("active");
+        }
+
+        // Filtering Logic
+        function filterGallery(e, category) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Fix: properly adds active class to the clicked button
+            if (e) {
+                e.target.classList.add('active');
+            }
+
+            const cards = document.querySelectorAll('.photo-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.classList.remove('hide');
+                } else {
+                    card.classList.add('hide');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

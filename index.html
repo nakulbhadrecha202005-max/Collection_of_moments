@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photography Navbar</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <div class="logo">Bhadrecha Nakul</div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="Aboutme.html">About</a>
+            <a href="Gallery.html">Gallery</a>
+        </nav>
+        <i class="fas fa-bars menu-btn" onclick="openMenu()"></i>
+    </header>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <i class="fas fa-times close-btn" onclick="closeMenu()"></i>
+        <a href="index.html"><i class="fas fa-house"></i> Home</a>
+        <a href="Aboutme.html"><i class="fas fa-camera"></i> About</a>
+        <a href="Gallery.html"><i class="fas fa-image"></i> Gallery</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Nakul Bhadrecha</h1>
+            <p>Capturing moments through my lens</p>
+            <a href="#" class="btn">View Gallary</a>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <center>
+        <section class="content">
+            <h2>About Me</h2>
+            <p>
+                Photography for me is not a profession, it is a feeling.
+                I love traveling, exploring nature, and capturing moments that feel real and timeless.
+                Every photograph here is a memory from my journey — places I’ve been, silence I’ve felt,
+                and beauty I’ve seen through my lens.
+            </p>
+        </section>
+    </center>
+
+    <!-- GALLERY TABLE -->
+    <center>
+        <h3 id="texttravelheading">Some of my Travel Photos</h3>
+    </center>
+    <div class="slider-container">
+        <div class="slider">
+            <div class="slides">
+                <img src="https://instagram.famd15-1.fna.fbcdn.net/v/t51.82787-15/610901668_18301766710287615_7411659978027754321_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=110&ig_cache_key=MzgwMzQxMjE5MTk1ODUwMzEzNQ==.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ==&_nc_ohc=cVlfpPikpBIQ7kNvwGURJ80&_nc_oc=Adn0TRSH_9UaegbUD3szL6rRuTsTGO__msVI84FkHwsFhP5yoVDItuR25XudB1flpA78OHRIqv_V6Wl8LjVFY3oR&_nc_ad=z-m&_nc_cid=2034&_nc_zt=23&_nc_ht=instagram.famd15-1.fna&_nc_gid=xd1E-y6mwZo1O_nTNnbYqA&oh=00_AfqTiDKbajfxiLJV5XfHsgLlMN63qgye8i1Ac-PezwwVQA&oe=697414C5"
+                    alt="Image 1">
+                <img src="https://instagram.famd15-1.fna.fbcdn.net/v/t51.82787-15/580713270_18295819570287615_6462001096340539651_n.webp?_nc_cat=111&ig_cache_key=Mzc2MzQwNTUzNzkyMTI1OTQyNA==.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQyMy5zZHIuQzMifQ==&_nc_ohc=ibOQbql_d4EQ7kNvwG8xLks&_nc_oc=AdmvqPSl8P1XEnD3o1-j7xexoSL4H-ifk7x3NURUGVcDc_VHPaiLtF4yA8nTFr_cH7omBcwG-HfKN1JsahOqAjHx&_nc_ad=z-m&_nc_cid=2034&_nc_zt=23&_nc_ht=instagram.famd15-1.fna&_nc_gid=xd1E-y6mwZo1O_nTNnbYqA&oh=00_AfrKbKU9QPlKktXPcjeqP4UzhPIzVggcq_iwY_MEpAgstw&oe=69742C12"
+                    alt="Image 2">
+                <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/610564959_18301439062287615_5452932851571395797_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=104&ig_cache_key=MzgwMTIxNjEwOTM2MzAyNDUzOQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=t9gKu7_Fgd8Q7kNvwG2FITj&_nc_oc=AdnQNlYg771Ogp-3o07ilz93CyOyo85k3tm28DhiCULmi8i6pECUKLXEy1NWWU5f9Ub-Z9MYfMkAGnRNEVMiUn_9&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=ptZz0XI7iqPByNwiRYRNrA&oh=00_AfqMzoCPXeevayokeWOitN-hAjUbzIgW2pMzz46lAaKczg&oe=697672C3"
+                    alt="Image 3">
+            </div>
+
+            <button class="prev" id="imageiconebutton" onclick="moveSlide(-1)">&#10094;</button>
+            <button class="next" id="imageiconebuttontwo" onclick="moveSlide(1)">&#10095;</button>
+        </div>
+    </div>
+
+
+    <center>
+        <button class="btn-view-more">Browse more photos</button>
+        <br><br><br><br>
+
+        <h2 id="timeless">Timeless Stones</h2>
+        <p id="timelesspara">Uparkot Through my lens.</p>
+
+        <div class="video-container">
+            <video autoplay loop playsinline class="cinematic-video" width="100%">
+                <source
+                    src="https://instagram.fstv8-3.fna.fbcdn.net/o1/v/t2/f2/m86/AQP5LZpiFOWrewRszYqq9Mnyt-Iz8WI_wm6j_wMQ3zacZtW4nzZg_YpDunRvtQ_3RDJF-SIHYiGjHNmVdr7JLalViLtkGDxaXndvC0g.mp4?_nc_cat=108&_nc_oc=AdlCkU90cHKrXv-TS1eBHR1mAHU7lvc8ak2_dRYr2QXC235kbhzaa9AqCt59Q6Qi9C-EJR4t0a8Pooa40XSiiM6W&_nc_sid=5e9851&_nc_ht=instagram.fstv8-3.fna.fbcdn.net&_nc_ohc=sevgMJ9GkPsQ7kNvwEpEsx1&efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5JTlNUQUdSQU0uQ0xJUFMuQzMuNzIwLmRhc2hfYmFzZWxpbmVfMV92MSIsInhwdl9hc3NldF9pZCI6NjgxOTY3MDk0ODgwNzM5LCJhc3NldF9hZ2VfZGF5cyI6MTUsInZpX3VzZWNhc2VfaWQiOjEwODI3LCJkdXJhdGlvbl9zIjozNSwidXJsZ2VuX3NvdXJjZSI6Ind3dyJ9&ccb=17-1&vs=7fadb4dae39064a4&_nc_vs=HBksFQIYUmlnX3hwdl9yZWVsc19wZXJtYW5lbnRfc3JfcHJvZC9DOTRGNUMyMTgwQjAzRjQzNkNGQzc2QjdBMzdDMjBCQ192aWRlb19kYXNoaW5pdC5tcDQVAALIARIAFQIYOnBhc3N0aHJvdWdoX2V2ZXJzdG9yZS9HRUpvZ1NTM3BYZ0EzS29DQUtXR2pJVl8wYlFYYnN0VEFRQUYVAgLIARIAKAAYABsCiAd1c2Vfb2lsATEScHJvZ3Jlc3NpdmVfcmVjaXBlATEVAAAmxueC59qPtgIVAigCQzMsF0BBwAAAAAAAGBJkYXNoX2Jhc2VsaW5lXzFfdjERAHX-B2WWqQEA&_nc_gid=yWaZEWPLRMYkB5XCOvEA2g&_nc_zt=28&oh=00_AfpwtllziqNQpMrGYackZwXUUMEEJcjPZ1dNkFNKQo35pw&oe=697440E5"
+                    type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </center>
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+
+            <h3>Nakul Bhadrecha</h3>
+            <p>Photography • Travel • Nature</p>
+
+            <div class="social-links">
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+            </div>
+
+            <p class="copyright">
+                © 2026 Nakul Bhadrecha. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        let currentIndex = 0;
+
+        function moveSlide(direction) {
+            const slidesContainer = document.querySelector('.slides');
+            const totalSlides = document.querySelectorAll('.slides img').length;
+
+            currentIndex += direction;
+
+            // Infinite Loop Logic
+            if (currentIndex >= totalSlides) {
+                currentIndex = 0;
+            } else if (currentIndex < 0) {
+                currentIndex = totalSlides - 1;
+            }
+
+            // Use percentages so it works on any screen width
+            const offset = -currentIndex * 100;
+            slidesContainer.style.transform = `translateX(${offset}%)`;
+
+            document.querySelector('video').play().catch(error => {
+                console.log("Autoplay was prevented by the browser. Click the page to allow.");
+            });
+        }
+    </script>
+
+    <script>
+        function openMenu() {
+            document.getElementById("sidebar").classList.add("active");
+        }
+
+        function closeMenu() {
+            document.getElementById("sidebar").classList.remove("active");
+        }
+    </script>
+
+
+    </script>
+</body>
+
+</html>
