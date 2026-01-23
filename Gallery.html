@@ -58,9 +58,7 @@
             transition: 0.3s;
         }
 
-        .nav-links a:hover {
-            color: #f0c040;
-        }
+
 
         /* Gallery Title Section (Renamed from header to avoid CSS conflict) */
         .intro-section {
@@ -293,6 +291,15 @@
                 display: inline-block;
             }
 
+            #memoriesforzen {
+                font-size: 6vw;
+            }
+
+            .visualtext {
+                font-size: 9vw !important;
+                text-align: left !important;
+            }
+
         }
 
         .visual-text {
@@ -302,6 +309,20 @@
             font-size: 18px;
             line-height: 1.5;
             text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            #memoriesforzen {
+                font-size: 6vw;
+                text-align: left;
+                margin-left: 3vw;
+            }
+
+            .visual-text {
+                font-size: 4vw !important;
+                text-align: left !important;
+            }
+
         }
 
         .footer {
@@ -372,7 +393,7 @@
     </div>
 
     <div class="intro-section">
-        <h1 style="color: #977a29;">Wander Explorer</h1>
+        <h1 style="color: #977a29; margin-top:4vw !important; " id="memoriesforzen">Memories Frozen in Time</h1>
         <p class="visual-text">
             I love traveling and exploring new places, as it helps me discover the beauty of the world.
             Traveling is my hobby, and I enjoy clicking pictures of nature, moments, and special moments.
@@ -543,7 +564,7 @@
             <img src="https://instagram.fraj2-1.fna.fbcdn.net/v/t51.82787-15/535156780_18283257661287615_364811249984557543_n.webp?_nc_cat=103&ig_cache_key=MzcwMjU1MjgyNTU1MTc5NjIyMQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTQ0MC5zZHIuQzMifQ%3D%3D&_nc_ohc=2F_8MNs_-FAQ7kNvwFKXoxX&_nc_oc=AdnphWayxitMC3cJ9EiCRWd3_UlAcjyl7X_wEW7VdyvMnrf0DxHcyd-Gufu4CjcSiljhpVkASNKBFqraefvbKjBg&_nc_ad=z-m&_nc_cid=1012&_nc_zt=23&_nc_ht=instagram.fraj2-1.fna&_nc_gid=q-Yz_aPSP5Sh9hDIeFrsuA&oh=00_AfpxyDb1CtKBycnt2gkJQjoCdx0agJX64_350ybaBFqjvw&oe=6977F8DA"
                 alt="myself">
             <div class="caption">
-                <h3>Sudarshan Setu</h3>
+                <h3>Sudershan Setu</h3>
             </div>
         </div>
 
@@ -552,7 +573,7 @@
                 alt="myself">
             <div class="caption">
 
-                <h3>Sudarshan Setu </h3>
+                <h3>Sudershan Setu </h3>
             </div>
         </div>
 
@@ -561,7 +582,7 @@
                 alt="myself">
             <div class="caption">
 
-                <h3>Shivrajpur Beach</h3>
+                <h3>Shivrajput Beach</h3>
             </div>
         </div>
 
@@ -579,8 +600,8 @@
             <h3 id="namefooter">Nakul Bhadrecha</h3>
             <p id="categoryfooter">Photography • Travel • Nature</p>
             <div class="social-links">
-                <a href="https://www.instagram.com/nakulbhadrecha/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/919327322975"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-whatsapp"></i></a>
             </div>
             <p class="copyright">
                 © 2026 Nakul Bhadrecha. All rights reserved.
@@ -620,10 +641,4 @@
     </script>
 </body>
 
-
 </html>
-
-
-
-
-
